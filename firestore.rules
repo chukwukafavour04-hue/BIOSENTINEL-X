@@ -1,0 +1,103 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // Default-deny catch-all
+    match /{document=**} {
+      allow read, write: if false;
+    }
+
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    function isOwner(userId) {
+      return isSignedIn() && request.auth.uid == userId;
+    }
+
+    function isAdmin() {
+      return isSignedIn() && (
+        request.auth.token.email == 'chukwukafavour04@gmail.com' ||
+        exists(/databases/$(database)/documents/admins/$(request.auth.uid))
+      );
+    }
+
+    function isValidId(id) {
+      return id is string && id.size() > 0 && id.size() <= 128 && id.matches('^[a-zA-Z0-9_\\-]+$');
+    }
+
+    function incoming() {
+      return request.resource.data;
+    }
+
+    function existing() {
+      return resource.data;
+    }
+
+    // Zoonotic Reports
+    match /zoonotic_reports/{reportId} {
+      allow read: if isSignedIn();
+      allow create: if isSignedIn() && isValidId(reportId) &&
+        incoming().diseaseName is string && incoming().diseaseName.size() <= 100 &&
+        incoming().state is string && incoming().state.size() <= 64 &&
+        incoming().lga is string && incoming().lga.size() <= 64;
+      allow update: if isSignedIn() && isValidId(reportId) &&
+        (isAdmin() || incoming().reportedBy == request.auth.uid || incoming().reportedByEmail == request.auth.token.email);
+      allow delete: if isAdmin();
+    }
+
+    // Environmental Reports
+    match /environmental_reports/{reportId} {
+      allow read: if isSignedIn();
+      allow create: if isSignedIn() && isValidId(reportId) &&
+        incoming().indicatorType is string && incoming().indicatorType.size() <= 50 &&
+        incoming().state is string && incoming().state.size() <= 64 &&
+        incoming().lga is string && incoming().lga.size() <= 64;
+      allow update: if isSignedIn() && isValidId(reportId) &&
+        (isAdmin() || incoming().reportedBy == request.auth.uid || incoming().reportedByEmail == request.auth.token.email);
+      allow delete: if isAdmin();
+    }
+
+    // Vector Reports
+    match /vector_reports/{reportId} {
+      allow read: if isSignedIn();
+      allow create: if isSignedIn() && isValidId(reportId) &&
+        incoming().vectorType is string && incoming().vectorType.size() <= 50 &&
+        incoming().species is string && incoming().species.size() <= 100 &&
+        incoming().state is string && incoming().state.size() <= 64;
+      allow update: if isSignedIn() && isValidId(reportId) &&
+        (isAdmin() || incoming().reportedBy == request.auth.uid || incoming().reportedByEmail == request.auth.token.email);
+      allow delete: if isAdmin();
+    }
+
+    // Investigations
+    match /investigations/{investigationId} {
+      allow read: if isSignedIn();
+      allow create: if isSignedIn() && isValidId(investigationId) &&
+        incoming().investigationNumber is string && incoming().investigationNumber.size() <= 50 &&
+        incoming().title is string && incoming().title.size() <= 200 &&
+        incoming().state is string && incoming().state.size() <= 64;
+      allow update: if isSignedIn() && isValidId(investigationId);
+      allow delete: if isAdmin();
+    }
+
+    // Audit Logs
+    match /audit_logs/{logId} {
+      allow read: if isSignedIn();
+      allow create: if isSignedIn() && isValidId(logId) &&
+        incoming().action is string && incoming().action.size() <= 100;
+      allow update, delete: if false; // Append-only audit trail
+    }
+
+    // User Profiles
+    match /users/{userId} {
+      allow read: if isSignedIn();
+      allow write: if isOwner(userId) || isAdmin();
+    }
+
+    // Admin List
+    match /admins/{adminId} {
+      allow read: if isSignedIn();
+      allow write: if isAdmin();
+    }
+  }
+}

@@ -1,0 +1,6 @@
+{
+  "name": "BIOSENTINEL X",
+  "description": "Predicting Health Threats Before They Become Health Emergencies — One Health Intelligence Platform connecting human, animal, and environmental intelligence.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

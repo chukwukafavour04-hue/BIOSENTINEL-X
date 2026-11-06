@@ -1,0 +1,176 @@
+{
+  "entities": {
+    "ZoonoticReport": {
+      "title": "Zoonotic Report",
+      "description": "Structured report on zoonotic disease spillover or incidence across animals and humans",
+      "type": "object",
+      "properties": {
+        "diseaseCategory": { "type": "string", "maxLength": 100 },
+        "diseaseName": { "type": "string", "maxLength": 100 },
+        "animalSpecies": { "type": "string", "maxLength": 100 },
+        "animalCases": { "type": "number" },
+        "humanCases": { "type": "number" },
+        "humanDeaths": { "type": "number" },
+        "state": { "type": "string", "maxLength": 64 },
+        "lga": { "type": "string", "maxLength": 64 },
+        "locationDetails": { "type": "string", "maxLength": 200 },
+        "lat": { "type": "number" },
+        "lng": { "type": "number" },
+        "labStatus": { "type": "string", "enum": ["confirmed", "pending", "suspected", "inconclusive"] },
+        "labMethod": { "type": "string", "maxLength": 100 },
+        "reportingDate": { "type": "string", "maxLength": 30 },
+        "investigationStatus": { "type": "string", "enum": ["triaged", "field_dispatched", "sample_in_transit", "sequenced", "closed"] },
+        "source": { "type": "string", "maxLength": 100 },
+        "riskScore": { "type": "number" },
+        "notes": { "type": "string", "maxLength": 2000 },
+        "reportedBy": { "type": "string", "maxLength": 128 },
+        "reportedByEmail": { "type": "string", "maxLength": 128 },
+        "createdAt": { "type": "string", "format": "date-time" },
+        "updatedAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["diseaseName", "state", "lga", "labStatus", "reportingDate", "reportedBy"]
+    },
+    "EnvironmentalReport": {
+      "title": "Environmental Report",
+      "description": "Surveillance of water quality, flooding, sanitation, and climate conditions",
+      "type": "object",
+      "properties": {
+        "indicatorType": { "type": "string", "enum": ["water_quality", "flooding", "sanitation", "waste_management", "contamination", "climatic"] },
+        "state": { "type": "string", "maxLength": 64 },
+        "lga": { "type": "string", "maxLength": 64 },
+        "locationDetails": { "type": "string", "maxLength": 200 },
+        "lat": { "type": "number" },
+        "lng": { "type": "number" },
+        "waterColiformCount": { "type": "number" },
+        "waterTurbidity": { "type": "number" },
+        "waterPh": { "type": "number" },
+        "floodInundationLevel": { "type": "string", "maxLength": 50 },
+        "displacedCount": { "type": "number" },
+        "stagnantWaterRisk": { "type": "string", "maxLength": 50 },
+        "openDefecationRisk": { "type": "string", "maxLength": 50 },
+        "abattoirWasteDisposal": { "type": "string", "maxLength": 100 },
+        "pesticideRunoff": { "type": "string", "maxLength": 100 },
+        "temperatureC": { "type": "number" },
+        "rainfallMm": { "type": "number" },
+        "humidityPercent": { "type": "number" },
+        "severity": { "type": "string", "enum": ["nominal", "moderate", "elevated", "critical"] },
+        "reportingDate": { "type": "string", "maxLength": 30 },
+        "source": { "type": "string", "maxLength": 100 },
+        "notes": { "type": "string", "maxLength": 2000 },
+        "reportedBy": { "type": "string", "maxLength": 128 },
+        "reportedByEmail": { "type": "string", "maxLength": 128 },
+        "createdAt": { "type": "string", "format": "date-time" },
+        "updatedAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["indicatorType", "state", "lga", "severity", "reportingDate", "reportedBy"]
+    },
+    "VectorReport": {
+      "title": "Vector Surveillance Report",
+      "description": "Entomological surveillance of disease vectors and resistance profiles",
+      "type": "object",
+      "properties": {
+        "vectorType": { "type": "string", "enum": ["mosquito", "tick", "sandfly", "blackfly", "tsetse"] },
+        "species": { "type": "string", "maxLength": 100 },
+        "state": { "type": "string", "maxLength": 64 },
+        "lga": { "type": "string", "maxLength": 64 },
+        "collectionSiteType": { "type": "string", "maxLength": 100 },
+        "lat": { "type": "number" },
+        "lng": { "type": "number" },
+        "collectionDate": { "type": "string", "maxLength": 30 },
+        "larvalIndexBreteau": { "type": "number" },
+        "adultTrapCatchPerNight": { "type": "number" },
+        "pathogenDetected": { "type": "string", "maxLength": 100 },
+        "insecticideResistance": { "type": "string", "maxLength": 100 },
+        "interventionsApplied": { "type": "string", "maxLength": 500 },
+        "notes": { "type": "string", "maxLength": 2000 },
+        "reportedBy": { "type": "string", "maxLength": 128 },
+        "reportedByEmail": { "type": "string", "maxLength": 128 },
+        "createdAt": { "type": "string", "format": "date-time" },
+        "updatedAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["vectorType", "species", "state", "lga", "collectionDate", "reportedBy"]
+    },
+    "Investigation": {
+      "title": "Emergency Response Investigation",
+      "description": "One Health multidisciplinary field investigation and containment action",
+      "type": "object",
+      "properties": {
+        "investigationNumber": { "type": "string", "maxLength": 50 },
+        "title": { "type": "string", "maxLength": 200 },
+        "diseaseOrThreat": { "type": "string", "maxLength": 100 },
+        "state": { "type": "string", "maxLength": 64 },
+        "lga": { "type": "string", "maxLength": 64 },
+        "priority": { "type": "string", "enum": ["low", "medium", "high", "urgent"] },
+        "status": { "type": "string", "enum": ["alert_raised", "rapid_response_dispatched", "lab_confirmation", "one_health_containment", "resolved"] },
+        "teamLead": { "type": "string", "maxLength": 128 },
+        "assignedOfficers": { "type": "string", "maxLength": 500 },
+        "triggerSignalType": { "type": "string", "maxLength": 100 },
+        "confirmedCases": { "type": "number" },
+        "contactsTraced": { "type": "number" },
+        "ringsVaccinated": { "type": "number" },
+        "finalReportBrief": { "type": "string", "maxLength": 5000 },
+        "createdBy": { "type": "string", "maxLength": 128 },
+        "createdByEmail": { "type": "string", "maxLength": 128 },
+        "createdAt": { "type": "string", "format": "date-time" },
+        "updatedAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["investigationNumber", "title", "state", "lga", "priority", "status", "createdBy"]
+    },
+    "AuditLog": {
+      "title": "Audit Log",
+      "description": "Security and governance audit log record",
+      "type": "object",
+      "properties": {
+        "action": { "type": "string", "maxLength": 100 },
+        "entityType": { "type": "string", "maxLength": 50 },
+        "entityId": { "type": "string", "maxLength": 128 },
+        "performedBy": { "type": "string", "maxLength": 128 },
+        "performedByEmail": { "type": "string", "maxLength": 128 },
+        "userRole": { "type": "string", "maxLength": 50 },
+        "details": { "type": "string", "maxLength": 1000 },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["action", "entityType", "performedBy", "createdAt"]
+    },
+    "UserProfile": {
+      "title": "User Profile",
+      "description": "User profile with role and jurisdictional permissions",
+      "type": "object",
+      "properties": {
+        "displayName": { "type": "string", "maxLength": 128 },
+        "email": { "type": "string", "maxLength": 128 },
+        "role": { "type": "string", "enum": ["epidemiologist", "veterinary_officer", "environmental_officer", "incident_commander", "researcher_observer"] },
+        "stateJurisdiction": { "type": "string", "maxLength": 64 },
+        "facility": { "type": "string", "maxLength": 128 },
+        "updatedAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["displayName", "email", "role"]
+    }
+  },
+  "firestore": {
+    "/zoonotic_reports/{reportId}": {
+      "schema": { "$ref": "#/entities/ZoonoticReport" },
+      "description": "Zoonotic disease case and spillover surveillance reports"
+    },
+    "/environmental_reports/{reportId}": {
+      "schema": { "$ref": "#/entities/EnvironmentalReport" },
+      "description": "Environmental indicators including water quality and flooding"
+    },
+    "/vector_reports/{reportId}": {
+      "schema": { "$ref": "#/entities/VectorReport" },
+      "description": "Vector surveillance entomological records"
+    },
+    "/investigations/{investigationId}": {
+      "schema": { "$ref": "#/entities/Investigation" },
+      "description": "Emergency response investigations and field containment"
+    },
+    "/audit_logs/{logId}": {
+      "schema": { "$ref": "#/entities/AuditLog" },
+      "description": "System security audit and traceability logs"
+    },
+    "/users/{userId}": {
+      "schema": { "$ref": "#/entities/UserProfile" },
+      "description": "User profiles and agency role assignments"
+    }
+  }
+}
